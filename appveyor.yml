@@ -1,0 +1,17 @@
+image: Visual Studio 2017
+
+# Skip on updates to the readme.
+skip_commits:
+  message: /updated readme.*|update readme.*s/
+
+services:
+- iis
+
+init:
+- ps: Get-PackageProvider -Name NuGet -ForceBootstrap > $null
+- ps: Install-Module -Name PSTestWinibleZ -Force
+
+build: false
+
+test_script:
+- cmd: powershell.exe "Import-Module -Name PSTestWinibleZ; $res = Test-AnsibleRole; exit ([int](-not $res))"

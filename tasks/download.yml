@@ -1,0 +1,70 @@
+# downloads the Win32-OpenSSH zip and extracts to the specified directory
+---
+- block:
+  - block:
+    - name: get latest release version
+      win_uri:
+        url: https://github.com/PowerShell/Win32-OpenSSH/releases/latest
+        follow_redirects: safe
+        method: HEAD
+      register: pri_openssh_latest_redirect
+
+    - name: extract the latest version from the latest release url
+      set_fact:
+        opt_openssh_version: '{{ pri_openssh_latest_redirect.response_uri.split("/")[-1] }}'
+    when: opt_openssh_version == 'latest'
+
+  - name: build download link from latest version
+    set_fact:
+      opt_openssh_url: https://github.com/PowerShell/Win32-OpenSSH/releases/download/{{ opt_openssh_version }}/OpenSSH-Win{{ opt_openssh_architecture }}.zip
+  when: opt_openssh_url is not defined
+
+- name: download the Win32-OpenSSH zip
+  win_get_url:
+    url: '{{ opt_openssh_url }}'
+    dest: '{{ opt_openssh_temp_path }}\OpenSSH-Win.zip'
+
+- name: create temp zip output folder
+  win_file:
+    path: '{{ opt_openssh_temp_path }}\OpenSSH'
+    state: directory
+
+- name: extract the Win32-OpenSSH zip to a temp folder
+  win_unzip:
+    src: '{{ opt_openssh_temp_path }}\OpenSSH-Win.zip'
+    dest: '{{ opt_openssh_temp_path }}\OpenSSH'
+    delete_archive: True
+  when: not ansible_check_mode
+
+- name: find parent folder that contains the sshd binary
+  win_find:
+    paths: '{{ opt_openssh_temp_path }}\OpenSSH'
+    recurse: yes
+    file_type: file
+    patterns:
+    - sshd.exe
+  register: pri_openssh_find_results
+  when: not ansible_check_mode
+
+- name: assert that we found the sshd binary from the zip
+  assert:
+    that:
+    - pri_openssh_find_results.files|count == 1
+  when: not ansible_check_mode
+
+- name: make sure the install directory exists
+  win_file:
+    path: '{{ opt_openssh_install_path }}'
+    state: directory
+
+- name: copy the binary contents to install directory
+  win_copy:
+    src: '{{ pri_openssh_find_results.files[0].path|win_dirname }}\'
+    dest: '{{ opt_openssh_install_path }}'
+    remote_src: True
+  when: not ansible_check_mode
+
+- name: delete temp zip output folder
+  win_file:
+    path: '{{ opt_openssh_temp_path }}\OpenSSH'
+    state: absent

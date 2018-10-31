@@ -1,0 +1,62 @@
+---
+- name: remove Win32-OpenSSH after tests have run
+  hosts: windows
+  gather_facts: no
+  tasks:
+  - name: check if sshd and ssh-agent services are installed
+    win_service:
+      name: '{{ item }}'
+    register: openssh_installed
+    changed_when: openssh_installed.exists
+    with_items:
+    - sshd
+    - ssh-agent
+
+  - block:
+    - name: get directory of OpenSSH
+      set_fact:
+        openssh_dir: '{{ openssh_installed.results[0].path|unquote|win_dirname }}'
+
+    - name: run uninstall script
+      win_command: powershell.exe -ExecutionPolicy ByPass -File "{{ openssh_dir }}\uninstall-sshd.ps1"
+
+    - name: remove binary location
+      win_file:
+        path: '{{ openssh_dir }}'
+        state: absent
+    when: openssh_installed is changed
+
+  - name: remove ssh ProgramData dir
+    win_file:
+      path: C:\ProgramData\ssh
+      state: absent
+
+  - name: remove the current user's .ssh folder
+    win_file:
+      path: '%USERPROFILE%\.ssh'
+      state: absent
+
+  - name: remove registry key
+    win_regedit:
+      path: HKLM:\SOFTWARE\OpenSSH
+      state: absent
+
+  - name: remove firewall rule
+    win_firewall_rule:
+      name: Win32-OpenSSH inbound
+      direction: in
+      action: allow
+      state: absent
+
+  - name: remove OPENSSH_HOME from path
+    win_path:
+      name: PATH
+      elements: '%OPENSSH_HOME%'
+      scope: machine
+      state: absent
+
+  - name: remove OPENSSH_HOME env var
+    win_environment:
+      name: OPENSSH_HOME
+      state: absent
+      level: machine

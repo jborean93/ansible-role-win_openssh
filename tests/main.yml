@@ -1,0 +1,9 @@
+---
+- import_playbook: defaults.yml
+- import_playbook: cleanup.yml
+
+- import_playbook: custom_vars.yml
+- import_playbook: cleanup.yml
+
+- import_playbook: client.yml
+- import_playbook: cleanup.yml

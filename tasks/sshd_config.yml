@@ -1,0 +1,39 @@
+# configures sshd_config for the server
+---
+- name: set the sshd_config Port value
+  win_lineinfile:
+    path: '{{ opt_openssh_install_path }}\sshd_config_default'
+    line: Port {{ opt_openssh_port }}
+    regexp: '^#?Port\s+'
+    state: present
+  ignore_errors: '{{ ansible_check_mode }}'
+
+- name: set the sshd_config PubkeyAuthentication value
+  win_lineinfile:
+    path: '{{ opt_openssh_install_path }}\sshd_config_default'
+    line: PubkeyAuthentication {{ opt_openssh_pubkey_auth | ternary('yes', 'no') }}
+    regexp: '^#?PubkeyAuthentication\s+'
+    state: present
+  ignore_errors: '{{ ansible_check_mode }}'
+
+- name: set the sshd_config PasswordAuthentication value
+  win_lineinfile:
+    path: '{{ opt_openssh_install_path }}\sshd_config_default'
+    line: PasswordAuthentication {{ opt_openssh_password_auth | ternary('yes', 'no') }}
+    regexp: '^#?PasswordAuthentication\s+'
+    state: present
+  ignore_errors: '{{ ansible_check_mode }}'
+
+- name: check if the server config directory already exists
+  win_stat:
+    path: C:\ProgramData\ssh
+  register: pri_openssh_config_dir
+
+- name: copy the template sshd_config_default file to the actual service location
+  win_copy:
+    src: '{{ opt_openssh_install_path }}\sshd_config_default'
+    dest: C:\ProgramData\ssh\sshd_config
+    remote_src: True
+  when: pri_openssh_config_dir.stat.exists
+  notify:
+  - restart sshd service

@@ -1,0 +1,46 @@
+# sets up the ssh service components
+---
+- name: check if sshd and ssh-agent services are installed
+  win_service:
+    name: '{{ item }}'
+  register: pri_openssh_service
+  changed_when: pri_openssh_service.exists == False  # we want to register a change for the step below
+  with_items:
+  - sshd
+  - ssh-agent
+
+- name: install the sshd and ssh-agent service
+  win_command: powershell.exe -ExecutionPolicy ByPass -File "{{ opt_openssh_install_path }}\install-sshd.ps1"
+  when: pri_openssh_service is changed
+
+- name: open port {{ opt_openssh_port }} for inbound SSH connections
+  win_firewall_rule:
+    name: Win32-OpenSSH inbound
+    protocol: tcp
+    localport: '{{ opt_openssh_port }}'
+    direction: in
+    action: allow
+    state: present
+    enabled: yes
+    profiles: '{{ opt_openssh_firewall_profiles }}'
+
+- name: configure sshd_config file
+  include_tasks: sshd_config.yml
+
+- name: setup user's authorized keys file
+  include_tasks: pubkeys.yml
+  when:
+  - not ansible_check_mode
+  - opt_openssh_pubkeys is defined
+
+- name: ensure sshd and ssh-agent service are set to start on boot
+  win_service:
+    name: '{{ item }}'
+    start_mode: auto
+    state: started
+  when:
+  - not ansible_check_mode
+  - not opt_openssh_skip_start
+  with_items:
+  - sshd
+  - ssh-agent

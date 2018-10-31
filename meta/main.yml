@@ -1,0 +1,18 @@
+---
+galaxy_info:
+  role_name: win_openssh
+  author: Jordan Borean
+  description: Install Win32-OpenSSH on a Windows host
+  license: MIT
+  min_ansible_version: 2.5
+  platforms:
+  - name: Windows
+    versions:
+    - Server 2016
+    - Server 2012 R2
+    - Server 2012
+    - Server 2008 R2
+  galaxy_tags:
+  - windows
+  - ssh
+dependencies: []

@@ -1,0 +1,112 @@
+---
+- name: install with the defaults set
+  hosts: windows
+  gather_facts: no
+  vars:
+    opt_openssh_install_path: C:\OpenSSH
+    opt_openssh_port: 2222
+    opt_openssh_pubkey_auth: False
+    opt_openssh_password_auth: False
+    opt_openssh_skip_start: True
+    opt_openssh_version: v7.7.1.0p1-Beta
+    opt_openssh_pubkeys: mypubkey
+
+  roles:
+  - role: ../..
+    run: 1
+  - role: ../..
+    run: 2
+
+  post_tasks:
+  - name: get info on the sshd service
+    win_service:
+      name: sshd
+    register: sshd_service
+
+  - name: get info on the ssh-agent service
+    win_service:
+      name: ssh-agent
+    register: sshagent_service
+
+  - name: check sshd is listening in on port 2222
+    win_shell: Get-NetTCPConnection -State Listen -LocalPort 2222 -LocalAddress 0.0.0.0 -ErrorAction SilentlyContinue; exit 0
+    changed_when: False
+    register: listener_process
+
+  - name: check if firewall rule is set
+    win_shell: if (Get-NetFirewallRule -DisplayName "Win32-OpenSSH inbound" -ErrorAction SilentlyContinue) { $true } else { $false }
+    check_mode: False
+    changed_when: False
+    register: firewall_rule
+
+  - name: get environment values
+    win_command: cmd.exe /c set
+    check_mode: False
+    changed_when: False
+    register: env_values
+
+  - name: get PATH variable
+    win_reg_stat:
+      path: HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\Environment
+      name: PATH
+    register: path_values
+
+  - name: get the contents of the sshd_config_default file
+    win_shell: Get-Content -Path C:\OpenSSH\sshd_config_default
+    changed_when: False
+    register: sshd_config
+    when: not ansible_check_mode
+
+  - name: get the contents of the user's authorized_keys file
+    win_shell: Get-Content -Path $env:USERPROFILE\.ssh\authorized_keys
+    changed_when: False
+    register: auth_keys
+    when: not ansible_check_mode
+
+  - name: get permissions of the .ssh folder
+    win_shell: icacls.exe "$($env:USERPROFILE)\.ssh"
+    changed_when: False
+    register: ssh_acl
+
+  - name: get permissions of the authorized_keys file
+    win_shell: icacls.exe "$($env:USERPROFILE)\.ssh\authorized_keys"
+    changed_when: False
+    register: pubkeys_acl
+
+  - name: assert results (check mode)
+    assert:
+      that:
+      - not sshd_service.exists
+      - not sshagent_service.exists
+      - firewall_rule.stdout_lines[0]|bool == False
+      - '"OPENSSH_HOME=C:\Program Files\OpenSSH" not in env_values.stdout_lines'
+      - '"%OPENSSH_HOME%" not in path_values.raw_value'
+    when: ansible_check_mode
+
+  - name: assert results
+    assert:
+      that:
+      - sshd_service.path == '"C:\OpenSSH\sshd.exe"'
+      - sshd_service.start_mode == "manual"
+      - sshd_service.state == "stopped"
+      - sshagent_service.path == '"C:\OpenSSH\ssh-agent.exe"'
+      - sshagent_service.start_mode == "manual"
+      - sshagent_service.state == "stopped"
+      - listener_process.stdout == ""
+      - firewall_rule.stdout_lines[0]|bool == True
+      - '"OPENSSH_HOME=C:\OpenSSH" in env_values.stdout_lines'
+      - '"%OPENSSH_HOME%" in path_values.raw_value'
+      - '"Port 2222" in sshd_config.stdout_lines'
+      - '"#Port 22" not in sshd_config.stdout_lines'
+      - '"PubkeyAuthentication no" in sshd_config.stdout_lines'
+      - '"#PubkeyAuthentication yes" not in sshd_config.stdout_lines'
+      - '"PasswordAuthentication no" in sshd_config.stdout_lines'
+      - '"#PasswordAuthentication yes" not in sshd_config.stdout_lines'
+      - '"mypubkey" in auth_keys.stdout_lines'
+      - '"NT AUTHORITY\SYSTEM:(OI)(CI)(F)" in ssh_acl.stdout'
+      - '"BUILTIN\Administrators:(OI)(CI)(F)" in ssh_acl.stdout'
+      - 'ansible_user + ":(OI)(CI)(F)" in ssh_acl.stdout'
+      - '"NT AUTHORITY\SYSTEM:(I)(F)" in pubkeys_acl.stdout'
+      - '"BUILTIN\Administrators:(I)(F)" in pubkeys_acl.stdout'
+      - 'ansible_user + ":(I)(F)" in pubkeys_acl.stdout'
+    when: not ansible_check_mode

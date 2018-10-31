@@ -1,0 +1,44 @@
+# setup a single or list of public keys in the current users authorized_keys file
+---
+- name: get full path of .ssh directory
+  win_shell: $env:USERPROFILE + "\.ssh"
+  changed_when: False
+  register: pri_openssh_ssh_dir
+
+- name: get current user for ACL
+  win_shell: $env:USERNAME
+  changed_when: False
+  register: pri_openssh_ssh_current_user
+
+- name: ensure the .ssh directory exists for the current user
+  win_file:
+    path: '{{ pri_openssh_ssh_dir.stdout_lines[0] }}'
+    state: directory
+
+- name: set correct permissions on .ssh directory
+  win_acl:
+    path: '{{ pri_openssh_ssh_dir.stdout_lines[0] }}'
+    user: '{{ item }}'
+    rights: FullControl
+    type: allow
+    state: present
+    inherit: ContainerInherit, ObjectInherit
+    propagation: None
+  with_items:
+  - System
+  - Administrators
+  - '{{ pri_openssh_ssh_current_user.stdout_lines[0] }}'
+
+- name: disable ACL inheritence on .ssh directory
+  win_acl_inheritance:
+    path: '{{ pri_openssh_ssh_dir.stdout_lines[0] }}'
+    reorganize: False
+    state: absent
+
+- name: ensure pubkeys are added to the authorized_keys file
+  win_lineinfile:
+    path: '{{ pri_openssh_ssh_dir.stdout_lines[0] }}\authorized_keys'
+    create: True
+    line: '{{ item }}'
+    state: present
+  with_items: '{{ opt_openssh_pubkeys }}'

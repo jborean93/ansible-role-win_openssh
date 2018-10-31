@@ -1,0 +1,32 @@
+---
+- name: validate input facts
+  assert:
+    that:
+    - opt_openssh_architecture|string in ["32", "64"]
+
+- name: check if OpenSSH has been downloaded and extracted
+  win_stat:
+    path: '{{ opt_openssh_install_path }}\sshd.exe'
+  register: pri_openssh_installed
+
+- name: download and extract the OpenSSH zip
+  include_tasks: download.yml
+  when: not pri_openssh_installed.stat.exists
+
+- name: create OPENSSH_HOME environment variable
+  win_environment:
+    name: OPENSSH_HOME
+    level: machine
+    state: present
+    value: '{{ opt_openssh_install_path }}'
+
+- name: add OPENSSH_HOME to to system PATH
+  win_path:
+    name: PATH
+    scope: machine
+    state: present
+    elements: '%OPENSSH_HOME%'
+
+- name: setup ssh server components
+  include_tasks: service.yml
+  when: opt_openssh_setup_service
