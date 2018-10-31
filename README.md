@@ -1,7 +1,7 @@
 # Ansible Role win_openssh
 
 [![Build status](https://ci.appveyor.com/api/projects/status/lwrvmyce3awiopsu?svg=true)](https://ci.appveyor.com/project/jborean93/ansible-role-win-openssh)
-[![win_openssh Ansible Galaxy Role](TODO add this)](https://galaxy.ansible.com/jborean93/win_openssh)
+[![win_openssh Ansible Galaxy Role](https://img.shields.io/ansible/role/31890.svg)](https://galaxy.ansible.com/jborean93/win_openssh)
 
 Installs [Win32-OpenSSH](https://github.com/PowerShell/Win32-OpenSSH) on a
 Windows host.
