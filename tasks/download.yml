@@ -2,27 +2,41 @@
 ---
 - block:
   - block:
+    - name: copy OpenSSH zip
+      win_copy:
+        src: '{{ opt_openssh_zip_file }}'
+        dest: '{{ opt_openssh_temp_path }}\OpenSSH-Win{{ opt_openssh_architecture }}.zip'
+      when:
+        - not pri_openssh_installed.stat.exists
+        - opt_openssh_zip_file is defined
     - name: get latest release version
       win_uri:
         url: https://github.com/PowerShell/Win32-OpenSSH/releases/latest
         follow_redirects: safe
         method: HEAD
       register: pri_openssh_latest_redirect
+      when: opt_openssh_zip_file is not defined
 
     - name: extract the latest version from the latest release url
       set_fact:
         opt_openssh_version: '{{ pri_openssh_latest_redirect.response_uri.split("/")[-1] }}'
-    when: opt_openssh_version == 'latest'
+    when: 
+      - opt_openssh_version == 'latest'
+      - opt_openssh_zip_file is not defined
 
   - name: build download link from latest version
     set_fact:
       opt_openssh_url: https://github.com/PowerShell/Win32-OpenSSH/releases/download/{{ opt_openssh_version }}/OpenSSH-Win{{ opt_openssh_architecture }}.zip
-  when: opt_openssh_url is not defined
+  when: 
+    - opt_openssh_url is not defined
+    - opt_openssh_zip_file is not defined
 
 - name: download the Win32-OpenSSH zip
   win_get_url:
     url: '{{ opt_openssh_url }}'
     dest: '{{ opt_openssh_temp_path }}\OpenSSH-Win.zip'
+  when:
+    - opt_openssh_zip_file is not defined
 
 - name: create temp zip output folder
   win_file:
