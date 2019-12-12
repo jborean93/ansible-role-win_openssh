@@ -60,7 +60,7 @@
       that:
       - not sshd_service.exists
       - not sshagent_service.exists
-      - firewall_rule.stdout_lines[0]|bool == False
+      - not firewall_rule.stdout_lines[0]|bool
       - '"OPENSSH_HOME=C:\Program Files\OpenSSH" not in env_values.stdout_lines'
       - '"%OPENSSH_HOME%" not in path_values.raw_value'
     when: ansible_check_mode
@@ -75,7 +75,7 @@
       - sshagent_service.start_mode == "auto"
       - sshagent_service.state == "running"
       - listener_process.stdout_lines[0] == "sshd"
-      - firewall_rule.stdout_lines[0]|bool == True
+      - firewall_rule.stdout_lines[0]|bool
       - '"OPENSSH_HOME=C:\Program Files\OpenSSH" in env_values.stdout_lines'
       - '"%OPENSSH_HOME%" in path_values.raw_value'
       - '"Port 22" in sshd_config.stdout_lines'

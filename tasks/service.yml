@@ -4,7 +4,7 @@
   win_service:
     name: '{{ item }}'
   register: pri_openssh_service
-  changed_when: pri_openssh_service.exists == False  # we want to register a change for the step below
+  changed_when: not pri_openssh_service.exists | bool  # we want to register a change for the step below
   with_items:
   - sshd
   - ssh-agent
