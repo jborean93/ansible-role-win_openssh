@@ -1,7 +1,0 @@
-name: win_openssh
-version: 0.2.0
-ci_platform: appveyor-windows
-ansible_versions:
-- 2.7.15
-- 2.8.7
-- 2.9.2
