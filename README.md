@@ -41,21 +41,30 @@ None, this role will run with the default options set.
 ### Optional Variables
 
 * `opt_openssh_architecture`: The Windows architecture, must be set to either `32` or `64` (default: `64`).
-* `opt_openssh_zip_file`: The full path of the OpenSSH zip file that need to be uploaded to the remote machine without downloading OpenSSH on remote machine.
 * `opt_openssh_firewall_profiles`: The firewall profiles to allow inbound SSH traffic (default: `domain,private`).
 * `opt_openssh_install_path`: The directory to install the OpenSSH binaries (default: `C:\Program Files\OpenSSH`).
-* `opt_openssh_pubkeys`: Either a string or list of strings to add to the user's `authorized_keys` file, by default no keys will be added.
+* `opt_openssh_pubkeys`: Either a string or list of strings to add to the user's `authorized_keys` file, by default no keys will be added. If `opt_openssh_shared_admin_key` is `True` then these keys will have no effect on the authentication for any Admin users.
 * `opt_openssh_setup_service`: Whether to install the sshd service components or just stick with the client executables (default: `True`).
 * `opt_openssh_skip_start`: Will not start the `sshd` and `ssh-agent` service and also not set to `auto start` (default: `False`).
 * `opt_openssh_temp_path`: The temporary directory to download the downloaded zip and extracted files (default: `C:\Windows\TEMP`).
 * `opt_openssh_url`: Sets the download location of the OpenSSH zip, if omitted then this will be sourced from the GitHub repository.
-* `opt_openssh_version`: Sets a specific version to download from GitHub, this is only valid when `opt_openssh_url` is not set (default: `latest`)
+* `opt_openssh_version`: Sets a specific version to download from GitHub, this is only valid when `opt_openssh_url` is not set (default: `latest`)i
+* `opt_openssh_zip_file`: The path to an OpenSSH zip release file that will be used to install OpenSSH. This will be used instead of `opt_openssh_url` if defined and `opt_openssh_zip_remote_src` controls whether the path is local to the controller or local to the Windows host.
+* `opt_openssh_zip_file`: The full path of the OpenSSH zip file that need to be uploaded to the remote machine without downloading OpenSSH on remote machine.
+* `opt_openssh_zip_remote_src`: (default: `False`)
 
 You can also customise the following sshd\_config values:
 
 * `opt_openssh_port`: Aligns to `Port`, the port the SSH service will listen on (default: `22`).
 * `opt_openssh_pubkey_auth`: Aligns to `PubkeyAuthentication`, whether the SSH service will allow authentication with SSH keys (default: `True`).
 * `opt_openssh_password_auth`: Aligns to `PasswordAuthentication`, whether the SSH service will allow authentication with passwords (default: `True`).
+* `opt_openssh_shared_admin_key`: Set to `True` to have Administrators used a shared authorization key at `__PROGRAMDATA__/ssh/administrators_authorized_keys`. Set to `False` to ensure `%USER_PROFILE%\.ssh\authorized_keys` is used for all users (default: `False`).
+
+You can customise the shell options to control how the sshd service starts a new shell:
+
+* `opt_openssh_default_shell`: Override the default shell set by the OpenSSH install. This should be the absolute path to an executable you want to run when starting an SSH session.
+* `opt_openssh_default_shell_command_option`: Set the arguments used when invoking the shell, this should not be adjusted in normal circumstances.
+* `opt_openssh_default_shell_escape_args`: Skip the automatic escaping arguments when invoking the shell.
 
 ### Output Variables
 
@@ -91,6 +100,13 @@ None
   - role: jborean93.win_openssh
     opt_openssh_setup_service: False
 ```
+
+
+## Testing
+
+To test this role, go to the [tests](tests) folder and run `vagrant up`. This
+will spin up a Windows Server 2019 host to test the role against. If the host
+is already online, running `vagrant provision` will rerun the tests.
 
 
 ## Backlog

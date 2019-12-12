@@ -8,8 +8,9 @@
     opt_openssh_pubkey_auth: False
     opt_openssh_password_auth: False
     opt_openssh_skip_start: True
-    opt_openssh_version: v7.7.1.0p1-Beta
+    opt_openssh_version: v7.9.0.0p1-Beta
     opt_openssh_pubkeys: mypubkey
+    opt_openssh_shared_admin_key: True
 
   roles:
   - role: ../..

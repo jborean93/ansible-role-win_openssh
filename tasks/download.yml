@@ -4,6 +4,7 @@
   win_copy:
     src: '{{ opt_openssh_zip_file }}'
     dest: '{{ opt_openssh_temp_path }}\OpenSSH-Win.zip'
+    remote_src: '{{ opt_openssh_zip_remote_src }}'
   when: opt_openssh_zip_file is defined
 
 - block:

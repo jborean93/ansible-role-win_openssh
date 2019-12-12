@@ -33,6 +33,33 @@
   - not ansible_check_mode
   - opt_openssh_pubkeys is defined
 
+- name: set the default shell
+  win_regedit:
+    path: HKLM:\SOFTWARE\OpenSSH
+    name: DefaultShell
+    state: present
+    type: string
+    data: '{{ opt_openssh_default_shell }}'
+  when: opt_openssh_default_shell is defined
+
+- name: set the default shell command options
+  win_regedit:
+    path: HKLM:\SOFTWARE\OpenSSH
+    name: DefaultShellCommandOption
+    state: present
+    type: string
+    data: '{{ opt_openssh_default_shell_command_option }}'
+  when: opt_openssh_default_shell_command_option is defined
+
+- name: set the default shell escape arguments option
+  win_regedit:
+    path: HKLM:\SOFTWARE\OpenSSH
+    name: DefaultShellEscapeArguments
+    state: present
+    type: dword
+    data: '{{ (opt_openssh_default_shell_escape_args | bool) | ternary(1, 0) }}'
+  when: opt_openssh_default_shell_escape_args is defined
+
 - name: ensure sshd and ssh-agent service are set to start on boot
   win_service:
     name: '{{ item }}'
