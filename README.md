@@ -41,6 +41,7 @@ None, this role will run with the default options set.
 ### Optional Variables
 
 * `opt_openssh_architecture`: The Windows architecture, must be set to either `32` or `64` (default: `64`).
+* `opt_openssh_zip_file`: The full path of the OpenSSH zip file that need to be uploaded to the remote machine without downloading OpenSSH on remote machine.
 * `opt_openssh_firewall_profiles`: The firewall profiles to allow inbound SSH traffic (default: `domain,private`).
 * `opt_openssh_install_path`: The directory to install the OpenSSH binaries (default: `C:\Program Files\OpenSSH`).
 * `opt_openssh_pubkeys`: Either a string or list of strings to add to the user's `authorized_keys` file, by default no keys will be added.
