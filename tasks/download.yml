@@ -7,7 +7,7 @@
   when: opt_openssh_zip_file is defined
 
 - block:
-  - block:    
+  - block:
     - name: get latest release version
       win_uri:
         url: https://github.com/PowerShell/Win32-OpenSSH/releases/latest
