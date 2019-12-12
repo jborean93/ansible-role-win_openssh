@@ -1,5 +1,8 @@
 image: Visual Studio 2017
 
+environment:
+  CYGWIN: winsymlinks:nativestrict
+
 # Skip on updates to the readme.
 skip_commits:
   message: /updated readme.*|update readme.*s/
