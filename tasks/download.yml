@@ -1,12 +1,11 @@
 # downloads the Win32-OpenSSH zip and extracts to the specified directory
 ---
-- block:
-  - name: copy OpenSSH zip
-    win_copy:
-      src: '{{ opt_openssh_zip_file }}'
-      dest: '{{ opt_openssh_temp_path }}\OpenSSH-Win.zip'
+- name: copy OpenSSH zip from Ansible controller
+  win_copy:
+    src: '{{ opt_openssh_zip_file }}'
+    dest: '{{ opt_openssh_temp_path }}\OpenSSH-Win.zip'
   when: opt_openssh_zip_file is defined
-  
+
 - block:
   - block:    
     - name: get latest release version
@@ -25,14 +24,13 @@
     set_fact:
       opt_openssh_url: https://github.com/PowerShell/Win32-OpenSSH/releases/download/{{ opt_openssh_version }}/OpenSSH-Win{{ opt_openssh_architecture }}.zip
   when: 
-    - opt_openssh_url is not defined
-    - opt_openssh_zip_file is not defined
+  - opt_openssh_url is not defined
+  - opt_openssh_zip_file is not defined
 
-- block:
-  - name: download the Win32-OpenSSH zip
-    win_get_url:
-      url: '{{ opt_openssh_url }}'
-      dest: '{{ opt_openssh_temp_path }}\OpenSSH-Win.zip'
+- name: download the Win32-OpenSSH zip
+  win_get_url:
+    url: '{{ opt_openssh_url }}'
+    dest: '{{ opt_openssh_temp_path }}\OpenSSH-Win.zip'
   when: opt_openssh_zip_file is not defined
 
 - name: create temp zip output folder
