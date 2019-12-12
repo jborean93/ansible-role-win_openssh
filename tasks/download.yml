@@ -23,7 +23,7 @@
   - name: build download link from latest version
     set_fact:
       opt_openssh_url: https://github.com/PowerShell/Win32-OpenSSH/releases/download/{{ opt_openssh_version }}/OpenSSH-Win{{ opt_openssh_architecture }}.zip
-  when: 
+  when:
   - opt_openssh_url is not defined
   - opt_openssh_zip_file is not defined
 
