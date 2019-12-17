@@ -1,6 +1,6 @@
 # Changelog for win_openssh
 
-## v0.2.0 - TBD
+## v0.2.0 - 2019-12-27
 
 * Added the `opt_openssh_zip_file` and `opt_openssh_zip_remote_src` option to add another way to source the OpenSSH zip archive.
 * By default this role will remove the `AuthorizedKeysFile __PROGRAMDATA__/ssh/administrators_authorized_keys` entry in `sshd_config` so Administrators on the host do not use a shared key. This can be controlled with `opt_openssh_shared_admin_key` if you wish to use the shared location.
