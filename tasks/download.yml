@@ -1,10 +1,12 @@
 # downloads the Win32-OpenSSH zip and extracts to the specified directory
 ---
-- name: copy OpenSSH zip from Ansible controller
+- name: copy OpenSSH zip from {{ opt_openssh_zip_remote_src | ternary("local path", "Ansible controller") }}
   win_copy:
     src: '{{ opt_openssh_zip_file }}'
     dest: '{{ opt_openssh_temp_path }}\OpenSSH-Win.zip'
+    remote_src: '{{ opt_openssh_zip_remote_src }}'
   when: opt_openssh_zip_file is defined
+  ignore_errors: '{{ ansible_check_mode }}'  # File may not exist when in check mode
 
 - block:
   - block:

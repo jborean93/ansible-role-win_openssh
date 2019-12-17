@@ -1,7 +1,6 @@
 .vagrant
 Vagrantfile
+tests/.vagrant
 *.retry
 *.swp
 *.pyc
-tests/inventory.ini
-

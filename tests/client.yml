@@ -1,9 +1,17 @@
 ---
-- name: install with the defaults set
+- name: install client side components
   hosts: windows
   gather_facts: no
   vars:
+    opt_openssh_zip_file: C:\Windows\TEMP\OpenSSH.zip
+    opt_openssh_zip_remote_src: yes
     opt_openssh_setup_service: False
+
+  pre_tasks:
+  - name: download OpenSSH zip for zip file source
+    win_get_url:
+      url: https://github.com/PowerShell/Win32-OpenSSH/releases/download/v7.9.0.0p1-Beta/OpenSSH-Win64.zip
+      dest: C:\Windows\TEMP\OpenSSH.zip
 
   roles:
   - role: ../..

@@ -1,5 +1,5 @@
 ---
-- name: install with the defaults set
+- name: install with custom vars
   hosts: windows
   gather_facts: no
   vars:
@@ -8,8 +8,10 @@
     opt_openssh_pubkey_auth: False
     opt_openssh_password_auth: False
     opt_openssh_skip_start: True
-    opt_openssh_version: v7.7.1.0p1-Beta
+    opt_openssh_version: v7.9.0.0p1-Beta
     opt_openssh_pubkeys: mypubkey
+    opt_openssh_default_shell: powershell.exe
+    opt_openssh_shared_admin_key: True
 
   roles:
   - role: ../..
@@ -73,6 +75,12 @@
     changed_when: False
     register: pubkeys_acl
 
+  - name: get default shell registry key value
+    win_reg_stat:
+      path: HKLM:\SOFTWARE\OpenSSH
+      name: DefaultShell
+    register: default_shell
+
   - name: assert results (check mode)
     assert:
       that:
@@ -103,10 +111,12 @@
       - '"PasswordAuthentication no" in sshd_config.stdout_lines'
       - '"#PasswordAuthentication yes" not in sshd_config.stdout_lines'
       - '"mypubkey" in auth_keys.stdout_lines'
+      - '"       AuthorizedKeysFile __PROGRAMDATA__/ssh/administrators_authorized_keys" in sshd_config.stdout_lines'
       - '"NT AUTHORITY\SYSTEM:(OI)(CI)(F)" in ssh_acl.stdout'
       - '"BUILTIN\Administrators:(OI)(CI)(F)" in ssh_acl.stdout'
       - 'ansible_user + ":(OI)(CI)(F)" in ssh_acl.stdout'
       - '"NT AUTHORITY\SYSTEM:(I)(F)" in pubkeys_acl.stdout'
       - '"BUILTIN\Administrators:(I)(F)" in pubkeys_acl.stdout'
       - 'ansible_user + ":(I)(F)" in pubkeys_acl.stdout'
+      - default_shell.value == 'powershell.exe'
     when: not ansible_check_mode

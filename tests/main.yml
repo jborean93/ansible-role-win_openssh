@@ -1,4 +1,6 @@
 ---
+- import_playbook: cleanup.yml
+
 - import_playbook: defaults.yml
 - import_playbook: cleanup.yml
 

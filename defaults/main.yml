@@ -6,6 +6,8 @@ opt_openssh_port: 22
 opt_openssh_pubkey_auth: True
 opt_openssh_password_auth: True
 opt_openssh_setup_service: True
+opt_openssh_shared_admin_key: False
 opt_openssh_skip_start: False
 opt_openssh_temp_path: C:\Windows\TEMP
 opt_openssh_version: latest
+opt_openssh_zip_remote_src: False
