@@ -26,6 +26,14 @@
         state: absent
     when: openssh_installed is changed
 
+  - name: remove program files directories
+    win_file:
+      path: '{{ item }}'
+      state: absent
+    with_items:
+    - C:\Program Files\OpenSSH
+    - C:\OpenSSH
+
   - name: remove ssh ProgramData dir
     win_file:
       path: C:\ProgramData\ssh
@@ -34,6 +42,11 @@
   - name: remove the current user's .ssh folder
     win_file:
       path: '%USERPROFILE%\.ssh'
+      state: absent
+
+  - name: remove temp downloaded OpenSSH zip
+    win_file:
+      path: C:\Windows\TEMP\OpenSSH.zip
       state: absent
 
   - name: remove registry key

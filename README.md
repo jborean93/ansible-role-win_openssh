@@ -50,7 +50,6 @@ None, this role will run with the default options set.
 * `opt_openssh_url`: Sets the download location of the OpenSSH zip, if omitted then this will be sourced from the GitHub repository.
 * `opt_openssh_version`: Sets a specific version to download from GitHub, this is only valid when `opt_openssh_url` is not set (default: `latest`)i
 * `opt_openssh_zip_file`: The path to an OpenSSH zip release file that will be used to install OpenSSH. This will be used instead of `opt_openssh_url` if defined and `opt_openssh_zip_remote_src` controls whether the path is local to the controller or local to the Windows host.
-* `opt_openssh_zip_file`: The full path of the OpenSSH zip file that need to be uploaded to the remote machine without downloading OpenSSH on remote machine.
 * `opt_openssh_zip_remote_src`: (default: `False`)
 
 You can also customise the following sshd\_config values:

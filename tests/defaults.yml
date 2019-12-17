@@ -81,5 +81,6 @@
       - '"Port 22" in sshd_config.stdout_lines'
       - '"PubkeyAuthentication yes" in sshd_config.stdout_lines'
       - '"PasswordAuthentication yes" in sshd_config.stdout_lines'
+      - '"       AuthorizedKeysFile __PROGRAMDATA__/ssh/administrators_authorized_keys" not in sshd_config.stdout_lines'
       - sshd_config.stdout == sshd_config_service.stdout
     when: not ansible_check_mode
