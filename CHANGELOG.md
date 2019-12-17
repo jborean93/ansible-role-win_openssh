@@ -6,13 +6,6 @@
 * By default this role will remove the `AuthorizedKeysFile __PROGRAMDATA__/ssh/administrators_authorized_keys` entry in `sshd_config` so Administrators on the host do not use a shared key. This can be controlled with `opt_openssh_shared_admin_key` if you wish to use the shared location.
 * Added the `opt_openssh_default_shell`, `opt_openssh_default_shell_command_option`, and `opt_openssh_default_shell_escape_args` options to control the shell invocation options.
 
-# TODO:
-
-* Update `tests/custom_vars.yml` to check for the shared admin key presence and also for the change in the default shell
-* Update `tests/defaults.yml` to check the `sshd_config` to make sure the shared admin key is not there
-* Add a test for `opt_openssh_zip_file` in `tests/client.yml`
-* Test against Ansible `2.7`, `2.8`, and `2.9`
-
 
 ## v0.1.0 - 2018-10-31
 
