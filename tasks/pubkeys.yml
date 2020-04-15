@@ -42,6 +42,7 @@
     line: '{{ item }}'
     state: present
   with_items: '{{ opt_openssh_pubkeys }}'
+  when: opt_openssh_pubkeys is defined
 
 
 - name: ensure shared pubkeys are added to administrators_authorized_keys
@@ -54,3 +55,4 @@
   when:
   - pri_openssh_config_dir.stat.exists
   - '{{ opt_openssh_shared_admin_key | bool }}'
+  - opt_openssh_shared_admin_pubkeys is defined
