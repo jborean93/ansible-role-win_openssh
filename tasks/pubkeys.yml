@@ -61,7 +61,7 @@
   - opt_openssh_shared_admin_key
   - opt_openssh_shared_admin_pubkeys is defined
 
-- name: set correct permissions on .ssh directory
+- name: set correct permissions on administrators_authorized_keys file
   win_acl:
     path: '{{ pri_openssh_config_dir.stat.path }}\\administrators_authorized_keys'
     user: '{{ item }}'
@@ -76,3 +76,9 @@
   when:
   - pri_openssh_config_dir.stat.exists
   - opt_openssh_shared_admin_key
+
+- name: disable ACL inheritence on administrators_authorized_keys file
+  win_acl_inheritance:
+    path: '{{ pri_openssh_config_dir.stat.path }}\\administrators_authorized_keys'
+    reorganize: False
+    state: absent
