@@ -44,6 +44,10 @@
   with_items: '{{ opt_openssh_pubkeys }}'
   when: opt_openssh_pubkeys is defined
 
+- name: show pri_openssh_config_dir
+  debug:
+    msg: "{{ pri_openssh_config_dir }}"
+    verbosity: 1
 
 - name: ensure shared pubkeys are added to administrators_authorized_keys
   win_lineinfile:
@@ -54,5 +58,5 @@
   with_items: '{{ opt_openssh_shared_admin_pubkeys }}'
   when:
   - pri_openssh_config_dir.stat.exists
-  - '{{ opt_openssh_shared_admin_key | bool }}'
+  - opt_openssh_shared_admin_key
   - opt_openssh_shared_admin_pubkeys is defined
