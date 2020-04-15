@@ -31,7 +31,8 @@
   include_tasks: pubkeys.yml
   when:
   - not ansible_check_mode
-  - opt_openssh_pubkeys is defined
+  - opt_openssh_pubkeys is defined or opt_openssh_shared_admin_key is defined
+
 
 - name: set the default shell
   win_regedit:
