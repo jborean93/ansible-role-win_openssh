@@ -51,7 +51,7 @@
 
 - name: ensure shared pubkeys are added to administrators_authorized_keys
   win_lineinfile:
-    path: '{{ pri_openssh_config_dir.stdout_lines[0] }}\administrators_authorized_keys'
+    path: '{{ pri_openssh_config_dir.sta.path }}\\administrators_authorized_keys'
     create: True
     line: '{{ item }}'
     state: present
