@@ -44,6 +44,7 @@ None, this role will run with the default options set.
 * `opt_openssh_firewall_profiles`: The firewall profiles to allow inbound SSH traffic (default: `domain,private`).
 * `opt_openssh_install_path`: The directory to install the OpenSSH binaries (default: `C:\Program Files\OpenSSH`).
 * `opt_openssh_pubkeys`: Either a string or list of strings to add to the user's `authorized_keys` file, by default no keys will be added. If `opt_openssh_shared_admin_key` is `True` then these keys will have no effect on the authentication for any Admin users.
+* `opt_openssh_shared_admin_pubkeys`: Etiher a string or list of strings to add to the administrators_authorized_keys key file.
 * `opt_openssh_setup_service`: Whether to install the sshd service components or just stick with the client executables (default: `True`).
 * `opt_openssh_skip_start`: Will not start the `sshd` and `ssh-agent` service and also not set to `auto start` (default: `False`).
 * `opt_openssh_temp_path`: The temporary directory to download the downloaded zip and extracted files (default: `C:\Windows\TEMP`).

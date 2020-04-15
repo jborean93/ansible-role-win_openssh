@@ -42,3 +42,15 @@
     line: '{{ item }}'
     state: present
   with_items: '{{ opt_openssh_pubkeys }}'
+
+
+- name: ensure shared pubkeys are added to administrators_authorized_keys
+  win_lineinfile:
+    path: '{{ pri_openssh_config_dir.stdout_lines[0] }}\administrators_authorized_keys'
+    create: True
+    line: '{{ item }}'
+    state: present
+  with_items: '{{ opt_openssh_shared_admin_pubkeys }}'
+  when:
+  - pri_openssh_config_dir.stat.exists
+  - '{{ opt_openssh_shared_admin_key | bool }}'

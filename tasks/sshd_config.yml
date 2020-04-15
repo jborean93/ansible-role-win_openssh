@@ -44,6 +44,7 @@
     value: '{{ (opt_openssh_shared_admin_key | bool) | ternary("__PROGRAMDATA__/ssh/administrators_authorized_keys", omit) }}'
   ignore_errors: '{{ ansible_check_mode }}'
 
+
 - name: check if the server config directory already exists
   win_stat:
     path: C:\ProgramData\ssh
