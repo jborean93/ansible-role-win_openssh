@@ -82,3 +82,6 @@
     path: '{{ pri_openssh_config_dir.stat.path }}\\administrators_authorized_keys'
     reorganize: False
     state: absent
+  when:
+  - pri_openssh_config_dir.stat.exists
+  - opt_openssh_shared_admin_key
