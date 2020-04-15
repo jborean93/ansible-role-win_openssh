@@ -60,3 +60,19 @@
   - pri_openssh_config_dir.stat.exists
   - opt_openssh_shared_admin_key
   - opt_openssh_shared_admin_pubkeys is defined
+
+- name: set correct permissions on .ssh directory
+  win_acl:
+    path: '{{ pri_openssh_config_dir.stat.path }}\\administrators_authorized_keys'
+    user: '{{ item }}'
+    rights: FullControl
+    type: allow
+    state: present
+    inherit: ContainerInherit, ObjectInherit
+    propagation: None
+  with_items:
+  - System
+  - Administrators
+  when:
+  - pri_openssh_config_dir.stat.exists
+  - opt_openssh_shared_admin_key
