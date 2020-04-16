@@ -1,5 +1,4 @@
 .vagrant
-Vagrantfile
 tests/.vagrant
 *.retry
 *.swp
