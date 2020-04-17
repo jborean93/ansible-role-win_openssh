@@ -1,0 +1,13 @@
+---
+
+- name: remove Chocolatey SSH
+  win_chocolatey:
+    name: openssh
+    source: https://nuget.artifactory.homedepot.com/artifactory/api/nuget/chocolatey-remote
+    #source: https://chocolatey.org/api/v2/
+    state: absent
+    package_params: "/SSHServerFeature /KeyBasedAuthenticationFeature"
+  register: ssh
+  notify:
+  - restart sshd service
+

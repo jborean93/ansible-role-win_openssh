@@ -49,7 +49,7 @@
 
 - name: find parent folder that contains the sshd binary
   win_find:
-    paths: '{{ opt_openssh_temp_path }}\OpenSSH'
+    path: '{{ opt_openssh_temp_path }}\OpenSSH'
     recurse: yes
     file_type: file
     patterns:
