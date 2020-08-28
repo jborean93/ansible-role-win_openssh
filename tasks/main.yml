@@ -30,3 +30,7 @@
 - name: setup ssh server components
   include_tasks: service.yml
   when: opt_openssh_setup_service
+
+- name: Flush handlers
+  meta: flush_handlers
+  
