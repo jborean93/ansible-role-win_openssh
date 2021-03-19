@@ -2,12 +2,13 @@
 ---
 - name: get full path of .ssh directory
   win_shell: $env:USERPROFILE + "\.ssh"
-  changed_when: False
+  changed_when: false
   register: pri_openssh_ssh_dir
 
 - name: get current user for ACL
   win_shell: $env:USERNAME
-  changed_when: False
+  changed_when: false
+  become: false
   register: pri_openssh_ssh_current_user
 
 - name: ensure the .ssh directory exists for the current user
