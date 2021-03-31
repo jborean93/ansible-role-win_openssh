@@ -37,7 +37,7 @@
     pri_openssh_admin_name: '{{ pri_openssh_admin_name_raw.stdout | trim }}'
 
 - name: set the admin_authorized_keys setting
-  win_sshd_config:
+  win_lineinfile:
     path: '{{ opt_openssh_install_path }}\sshd_config_default'
     match_name: Group {{ pri_openssh_admin_name }}
     name: AuthorizedKeysFile
