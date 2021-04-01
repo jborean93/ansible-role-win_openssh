@@ -44,6 +44,13 @@
     value: '{{ (opt_openssh_shared_admin_key | bool) | ternary("__PROGRAMDATA__/ssh/administrators_authorized_keys", omit) }}'
   ignore_errors: '{{ ansible_check_mode }}'
 
+- name: set the admin_authorized_keys setting
+  win_sshd_config:
+    path: '{{ opt_openssh_install_path }}\sshd_config_default'
+    match_name: Group {{ pri_openssh_admin_name }}
+    name: AuthorizedKeysFile
+    value: '{{ (opt_openssh_shared_admin_key | bool) | ternary("__PROGRAMDATA__/ssh/administrators_authorized_keys", omit) }}'
+  ignore_errors: '{{ ansible_check_mode }}'
 
 - name: check if the server config directory already exists
   win_stat:
