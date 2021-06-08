@@ -25,8 +25,8 @@
     inherit: ContainerInherit, ObjectInherit
     propagation: None
   with_items:
-  - System
-  - Administrators
+  - S-1-5-18 # "SYSTEM" group independent of localization
+  - S-1-5-32-544 # "Administrators" group independent of localization
   - '{{ pri_openssh_ssh_current_user.stdout_lines[0] }}'
 
 - name: disable ACL inheritence on .ssh directory
