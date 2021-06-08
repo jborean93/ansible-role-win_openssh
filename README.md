@@ -64,6 +64,7 @@ You can customise the shell options to control how the sshd service starts a new
 * `opt_openssh_default_shell`: Override the default shell set by the OpenSSH install. This should be the absolute path to an executable you want to run when starting an SSH session.
 * `opt_openssh_default_shell_command_option`: Set the arguments used when invoking the shell, this should not be adjusted in normal circumstances.
 * `opt_openssh_default_shell_escape_args`: Skip the automatic escaping arguments when invoking the shell.
+* `opt_openssh_powershell_subsystem`: Set subsystem for powershell remoting, needs to be a 8.3 path like: `C:\PROGRA~1\POWERS~1\7\pwsh.exe` (default: `undefined`)
 
 ### Output Variables
 
