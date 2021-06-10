@@ -5,8 +5,9 @@
   changed_when: False
   register: pri_openssh_ssh_dir
 
-- name: get current user for ACL
-  win_shell: $env:USERNAME
+  # Get the SID to avoid translation issues down the line - https://github.com/jborean93/ansible-role-win_openssh/issues/11
+- name: get current user SID for ACL
+  win_shell: '[System.Security.Principal.WindowsIdentity]::GetCurrent().User.Value'
   changed_when: False
   register: pri_openssh_ssh_current_user
 
