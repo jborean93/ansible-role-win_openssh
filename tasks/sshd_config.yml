@@ -27,7 +27,7 @@
 - name: set powershell subsystem
   win_lineinfile:
     path: '{{ opt_openssh_install_path }}\sshd_config_default'
-    line: 'Subsystem       powershell {{ opt_openssh_powershell_subsystem }} -sshs -NoLogo -NoProfile'
+    line: "Subsystem\tpowershell\t{{ opt_openssh_powershell_subsystem }} -sshs -NoLogo -NoProfile"
     state: present
     insertafter: "^# override default of no subsystems"
   when: opt_openssh_powershell_subsystem is defined
