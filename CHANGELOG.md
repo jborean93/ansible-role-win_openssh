@@ -1,6 +1,6 @@
 # Changelog for win_openssh
 
-## v0.3.0 - TBD
+## v0.3.0 - 2021-06-11
 
 * Fixes localisation issues when the `SYSTEM` or `Administrators` group are spelt differently
 * Fixes current user name translation - https://github.com/jborean93/ansible-role-win_openssh/issues/11
