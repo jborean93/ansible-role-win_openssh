@@ -1,5 +1,12 @@
 # Changelog for win_openssh
 
+## v0.3.0 - TBD
+
+* Fixes localisation issues when the `SYSTEM` or `Administrators` group are spelt differently
+* Fixes current user name translation - https://github.com/jborean93/ansible-role-win_openssh/issues/11
+* Added `opt_openssh_powershell_subsystem` to set the PowerShell Remoting SSH subsystem
+
+
 ## v0.2.0 - 2019-12-27
 
 * Added the `opt_openssh_zip_file` and `opt_openssh_zip_remote_src` option to add another way to source the OpenSSH zip archive.
