@@ -34,11 +34,10 @@
   ignore_errors: '{{ ansible_check_mode }}'
 
 - name: get the localised name for the Administrators group
-  win_shell: |
     $sid = New-Object -TypeName System.Security.Principal.SecurityIdentifier -ArgumentList "S-1-5-32-544"
-    ($sid.Translate([System.Security.Principal.NTAccount]).Value -split "{{ '\\' }}")[1]
-  register: pri_openssh_admin_name_raw
+    ($sid.Translate([System.Security.Principal.NTAccount]).Value -split '//')[1]
   check_mode: no
+  register: pri_openssh_admin_name_raw
   changed_when: False
 
 - name: process admin name from raw win_shell output
