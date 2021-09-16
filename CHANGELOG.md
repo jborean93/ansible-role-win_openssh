@@ -1,5 +1,10 @@
 # Changelog for win_openssh
 
+## v0.3.1 - 2021-09-17
+
+* Fix Ansible parsing issue with command that contains `\\'` - https://github.com/jborean93/ansible-role-win_openssh/pull/17
+
+
 ## v0.3.0 - 2021-06-11
 
 * Fixes localisation issues when the `SYSTEM` or `Administrators` group are spelt differently
