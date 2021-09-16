@@ -34,8 +34,9 @@
   ignore_errors: '{{ ansible_check_mode }}'
 
 - name: get the localised name for the Administrators group
+    $bslash = [char]0x5C
     $sid = New-Object -TypeName System.Security.Principal.SecurityIdentifier -ArgumentList "S-1-5-32-544"
-    ($sid.Translate([System.Security.Principal.NTAccount]).Value -split '//')[1]
+    ($sid.Translate([System.Security.Principal.NTAccount]).Value -split "$bslash$bslash")[1]
   check_mode: no
   register: pri_openssh_admin_name_raw
   changed_when: False
