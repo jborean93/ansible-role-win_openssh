@@ -11,3 +11,4 @@ opt_openssh_skip_start: False
 opt_openssh_temp_path: C:\Windows\TEMP
 opt_openssh_version: latest
 opt_openssh_zip_remote_src: False
+opt_openssh_cipher_hardening: False
