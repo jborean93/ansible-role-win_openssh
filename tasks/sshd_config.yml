@@ -16,6 +16,30 @@
     state: present
   ignore_errors: '{{ ansible_check_mode }}'
 
+- name: Change allowed ciphers from default in sshd_config_default
+  win_lineinfile:
+    path: '{{ opt_openssh_install_path }}\sshd_config_default'
+    insertafter: '^# Ciphers and keying'
+    line: Ciphers chacha20-poly1305@openssh.com,aes256-gcm@openssh.com,aes128-gcm@openssh.com,aes256-ctr,aes192-ctr
+  when: opt_openssh_cipher_hardening
+  ignore_errors: '{{ ansible_check_mode }}'
+
+- name: Change allowed HMACS from default in sshd_config_default
+  win_lineinfile:
+    path: '{{ opt_openssh_install_path }}\sshd_config_default'
+    insertafter: '^# Ciphers and keying'
+    line: MACs hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com,umac-128-etm@openssh.com,hmac-sha2-512,hmac-sha2-256
+  when: opt_openssh_cipher_hardening
+  ignore_errors: '{{ ansible_check_mode }}'
+
+- name: Change allowed Kex Algorithms from default in sshd_config_default
+  win_lineinfile:
+    path: '{{ opt_openssh_install_path }}\sshd_config_default'
+    insertafter: '^# Ciphers and keying'
+    line: KexAlgorithms curve25519-sha256@libssh.org,ecdh-sha2-nistp521,ecdh-sha2-nistp384,ecdh-sha2-nistp256,diffie-hellman-group-exchange-sha256
+  when: opt_openssh_cipher_hardening
+  ignore_errors: '{{ ansible_check_mode }}'
+
 - name: set the sshd_config PasswordAuthentication value
   win_lineinfile:
     path: '{{ opt_openssh_install_path }}\sshd_config_default'
