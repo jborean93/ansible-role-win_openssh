@@ -43,3 +43,41 @@
     line: '{{ item }}'
     state: present
   with_items: '{{ opt_openssh_pubkeys }}'
+
+- name: manage administrators_authorized_keys file
+  block:
+
+    - name: ensure shared pubkeys are added to administrators_authorized_keys
+      win_lineinfile:
+        path: >-
+          {{ pri_openssh_config_dir.stat.path }}\\administrators_authorized_keys
+        create: true
+        line: '{{ item }}'
+        state: present
+      loop: "{{ opt_openssh_pubkeys }}"
+
+    - name: set correct permissions on administrators_authorized_keys file
+      win_acl:
+        path: >-
+          {{ pri_openssh_config_dir.stat.path }}\\administrators_authorized_keys
+        user: '{{ item }}'
+        rights: FullControl
+        type: allow
+        state: present
+        inherit: ContainerInherit, ObjectInherit
+        propagation: None
+      loop:
+        - S-1-5-18  # "SYSTEM" group independent of localization
+        - S-1-5-32-544  # "Administrators" group independent of localization
+
+    - name: disable ACL inheritence on administrators_authorized_keys file
+      win_acl_inheritance:
+        path: >-
+          {{ pri_openssh_config_dir.stat.path }}\\administrators_authorized_keys
+        reorganize: false
+        state: absent
+
+  when:
+    - pri_openssh_config_dir.stat.exists
+    - opt_openssh_shared_admin_key
+    - opt_openssh_pubkeys is defined
