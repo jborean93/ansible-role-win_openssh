@@ -5,10 +5,11 @@
   changed_when: false
   register: pri_openssh_ssh_dir
 
-- name: get current user for ACL
-  win_shell: $env:USERNAME
-  changed_when: false
-  become: false
+
+  # Get the SID to avoid translation issues down the line - https://github.com/jborean93/ansible-role-win_openssh/issues/11
+- name: get current user SID for ACL
+  win_shell: '[System.Security.Principal.WindowsIdentity]::GetCurrent().User.Value'
+  changed_when: False
   register: pri_openssh_ssh_current_user
 
 - name: ensure the .ssh directory exists for the current user
@@ -26,8 +27,8 @@
     inherit: ContainerInherit, ObjectInherit
     propagation: None
   with_items:
-  - System
-  - Administrators
+  - S-1-5-18 # "SYSTEM" group independent of localization
+  - S-1-5-32-544 # "Administrators" group independent of localization
   - '{{ pri_openssh_ssh_current_user.stdout_lines[0] }}'
 
 - name: disable ACL inheritence on .ssh directory

@@ -12,6 +12,7 @@
     opt_openssh_pubkeys: mypubkey
     opt_openssh_default_shell: powershell.exe
     opt_openssh_shared_admin_key: True
+    opt_openssh_powershell_subsystem: C:\PROGRA~1\POWERS~1\7\pwsh.exe
 
   roles:
   - role: ../..
@@ -91,6 +92,10 @@
       - '"%OPENSSH_HOME%" not in path_values.raw_value'
     when: ansible_check_mode
 
+  # Avoids quoting hell required in assert
+  - set_fact:
+      expected_subsystem_line: "Subsystem\tpowershell\tC:\\PROGRA~1\\POWERS~1\\7\\pwsh.exe -sshs -NoLogo -NoProfile"
+
   - name: assert results
     assert:
       that:
@@ -112,6 +117,7 @@
       - '"#PasswordAuthentication yes" not in sshd_config.stdout_lines'
       - '"mypubkey" in auth_keys.stdout_lines'
       - '"       AuthorizedKeysFile __PROGRAMDATA__/ssh/administrators_authorized_keys" in sshd_config.stdout_lines'
+      - expected_subsystem_line in sshd_config.stdout_lines
       - '"NT AUTHORITY\SYSTEM:(OI)(CI)(F)" in ssh_acl.stdout'
       - '"BUILTIN\Administrators:(OI)(CI)(F)" in ssh_acl.stdout'
       - 'ansible_user + ":(OI)(CI)(F)" in ssh_acl.stdout'

@@ -1,6 +1,25 @@
 # Changelog for win_openssh
 
-## v0.2.1 - 2020-04-15
+
+## v0.3.2 - 2021-09-18
+
+* Fix broken syntax for sshd configuration
+
+
+## v0.3.1 - 2021-09-17
+
+* Fix Ansible parsing issue with command that contains `\\'` - https://github.com/jborean93/ansible-role-win_openssh/pull/17
+
+
+## v0.3.0 - 2021-06-11
+
+* Fixes localisation issues when the `SYSTEM` or `Administrators` group are spelt differently
+* Fixes current user name translation - https://github.com/jborean93/ansible-role-win_openssh/issues/11
+* Added `opt_openssh_powershell_subsystem` to set the PowerShell Remoting SSH subsystem
+
+
+## v0.2.0 - 2019-12-27
+
 
 * Added the `opt_openssh_shared_admin_pubkeys` and added entryies to administrators_authorized_keys if provided
 * Added the `opt_openssh_zip_file` and `opt_openssh_zip_remote_src` option to add another way to source the OpenSSH zip archive.
